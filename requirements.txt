@@ -1,5 +1,0 @@
-altair
-numpy
-pandas
-pydeck
-streamlit

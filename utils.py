@@ -18,11 +18,12 @@ import textwrap
 import streamlit as st
 
 
-def show_code(demo):
+def show_code(code):
     """Showing the code of the demo."""
-    show_code = st.sidebar.checkbox("Show code", True)
+    show_code = st.sidebar.checkbox("Show code", False)
     if show_code:
-        # Showing the code of the demo.
         st.markdown("## Code")
-        sourcelines, _ = inspect.getsourcelines(demo)
-        st.code(textwrap.dedent("".join(sourcelines[1:])))
+        for function in code:
+            # Showing the code of the demo.
+            sourcelines, _ = inspect.getsourcelines(function)
+            st.code(textwrap.dedent("".join(sourcelines[0:])))
