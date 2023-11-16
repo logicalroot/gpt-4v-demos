@@ -34,13 +34,19 @@ def generate(image, api_key):
         "max_tokens": 300,
     }
 
-    response = requests.post(
-        "https://api.openai.com/v1/chat/completions", headers=headers, json=payload
-    )
+    try:
+        response = requests.post(
+            "https://api.openai.com/v1/chat/completions", headers=headers, json=payload
+        )
+        response.raise_for_status()
 
-    st.session_state.camera_caption = response.json()["choices"][0]["message"][
-        "content"
-    ]
+        camera_caption = response.json()["choices"][0]["message"]["content"]
+        st.session_state.camera_caption = camera_caption
+        st.balloons()
+    except requests.exceptions.HTTPError:
+        st.toast(f":red[HTTP error. Check your API key.]")
+    except Exception as err:
+        st.toast(f":red[Error: {err}]")
 
 
 def run():
@@ -60,7 +66,6 @@ def run():
     if button and bytes_data is not None:
         with st.spinner("Generating..."):
             generate(bytes_data, st.session_state.api_key)
-            st.balloons()
 
     if "camera_caption" in st.session_state:
         st.text_area(
@@ -70,7 +75,7 @@ def run():
         )
 
 
-st.set_page_config(page_title="Camera", page_icon="📷")
+st.set_page_config(page_title="GPT-4V Camera", page_icon="📷")
 st.write("# 📷 Camera")
 st.write("Take a photo with your device's camera and generate a caption.")
 st.info(

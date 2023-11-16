@@ -24,11 +24,10 @@ def generate(image, api_key, product_attributes="{}"):
                         "type": "text",
                         "text": f"""Write your best single-paragraph product description
                         for this image. You are encouraged to incorporate the product
-                        attributes below. Do not infer sizing, product name, product
-                        brand, or specific materials unless provided in the product
-                        attributes below. If the materials are a blend, refrain
-                        from citing specific values. Do not infer anything about
-                        the brand from its name.\n\n{product_attributes}""",
+                        attributes below, if provided. Do not infer sizing, product name,
+                        product brand, or specific materials unless provided in the product
+                        attributes below. Do not use the brand's name to infer the brand's
+                        story.\n\n{product_attributes}""",
                     },
                     {
                         "type": "image_url",
@@ -40,15 +39,22 @@ def generate(image, api_key, product_attributes="{}"):
         "max_tokens": 300,
     }
 
-    response = requests.post(
-        "https://api.openai.com/v1/chat/completions", headers=headers, json=payload
-    )
+    try:
+        response = requests.post(
+            "https://api.openai.com/v1/chat/completions", headers=headers, json=payload
+        )
+        response.raise_for_status()
 
-    description = {
-        **json.loads(product_attributes),
-        "description": response.json()["choices"][0]["message"]["content"],
-    }
-    st.session_state.product_description = json.dumps(description, indent=4)
+        description = {
+            **json.loads(product_attributes),
+            "description": response.json()["choices"][0]["message"]["content"],
+        }
+        st.session_state.product_description = json.dumps(description, indent=4)
+        st.balloons()
+    except requests.exceptions.HTTPError:
+        st.toast(f":red[HTTP error. Check your API key.]")
+    except Exception as err:
+        st.toast(f":red[Error: {err}]")
 
 
 def run():
@@ -76,7 +82,6 @@ def run():
     if button and bytes_data is not None:
         with st.spinner("Generating..."):
             generate(bytes_data, st.session_state.api_key, product_attributes)
-            st.balloons()
 
     if "product_description" in st.session_state:
         st.text_area(
@@ -86,7 +91,7 @@ def run():
         )
 
 
-st.set_page_config(page_title="Product Descriptions", page_icon="👕")
+st.set_page_config(page_title="GPT-4V Product Descriptions", page_icon="👕")
 st.write("# 👕 Product Descriptions")
 st.write("Upload an image and generate a product description.")
 st.info(

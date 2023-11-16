@@ -14,10 +14,13 @@ def run():
     except:
         # Otherwise, prompt for OpenAI API key
         st.session_state.api_key = st.sidebar.text_input(
-            "OpenAI API key", "", type="password"
+            "OpenAI API key",
+            st.session_state.api_key if "api_key" in st.session_state else "",
+            type="password",
         )
 
-    st.sidebar.write("An OpenAI API key is required to run the tests.")
+    if st.session_state.api_key == "":
+        st.sidebar.caption(":red[An OpenAI API key is required to run the tests.]")
 
     st.write("# GPT-4V Testing Ground")
     st.write("\n")
