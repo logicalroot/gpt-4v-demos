@@ -46,7 +46,7 @@ def submit(image, api_key, product_attributes):
 
         description = {
             **json.loads(product_attributes),
-            "description": response.json()["choices"][0]["message"]["content"],
+            "product_description": response.json()["choices"][0]["message"]["content"],
         }
         st.session_state.product_description = json.dumps(
             description, indent=4, ensure_ascii=False

@@ -5,6 +5,8 @@
 
 This app provides some basic demos to test the vision capabilities of GPT-4V.
 
+Streamlit was selected as a framework for this project to enable rapid prototyping of new ideas.
+
 ## Demos
 
 <table>
@@ -21,7 +23,9 @@ And more coming soon!
 - Python 3.8+
 - OpenAI API key
 
-## Usage
+## Local setup
+
+Here's how you can get started.
 
 1. Clone this repository.
 2. Install the necessary packages:
