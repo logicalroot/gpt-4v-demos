@@ -25,7 +25,7 @@ def run():
     st.write("# GPT-4V Testing Ground")
     st.write("\n")
     st.info(
-        "This app provides some basic demos to test the vision capabilities of GPT-4."
+        "This app provides some basic demos to test the vision capabilities of GPT-4V."
     )
     st.info("Open them from the sidebar!", icon="↖️")
     st.caption(

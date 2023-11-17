@@ -1,6 +1,7 @@
 import streamlit as st
 import base64
 import requests
+import json
 import components
 from utils import show_code
 
@@ -15,15 +16,14 @@ def submit(image, api_key):
         "messages": [
             {
                 "role": "system",
-                "content": "You are a friendly assistant.",
+                "content": "You are trained to extract text from images.",
             },
             {
                 "role": "user",
                 "content": [
                     {
                         "type": "text",
-                        "text": """Write your best single-paragraph caption for this image.
-                        Do not make assumptions.""",
+                        "text": "Extract all of the text visible in this image.",
                     },
                     {
                         "type": "image_url",
@@ -32,7 +32,7 @@ def submit(image, api_key):
                 ],
             },
         ],
-        "max_tokens": 300,
+        "max_tokens": 1024,
     }
 
     try:
@@ -41,8 +41,8 @@ def submit(image, api_key):
         )
         response.raise_for_status()
 
-        camera_caption = response.json()["choices"][0]["message"]["content"]
-        st.session_state.camera_caption = camera_caption
+        text = response.json()["choices"][0]["message"]["content"]
+        st.session_state.ocr_text = text
         st.balloons()
     except requests.exceptions.HTTPError:
         st.toast(f":red[HTTP error. Check your API key.]")
@@ -51,26 +51,27 @@ def submit(image, api_key):
 
 
 def run():
-    image = components.camera_uploader()
+    image = components.image_uploader()
 
     api_key = components.api_key_with_warning()
 
     components.submit_button(image, api_key, submit)
 
-    if "camera_caption" in st.session_state:
+    if "ocr_text" in st.session_state:
         st.text_area(
-            "Caption:",
-            st.session_state.camera_caption,
-            height=300,
+            "Extracted text:",
+            st.session_state.ocr_text,
+            height=400,
         )
 
 
-st.set_page_config(page_title="GPT-4V Camera", page_icon="📷")
-st.write("# 📷 Camera")
-st.write("Take a photo with your device's camera and generate a caption.")
+st.set_page_config(page_title="GPT-4V OCR", page_icon="🧾")
+st.write("# 🧾 OCR")
+st.write("Upload an image and extract the text.")
 st.info(
     "This is a test of the OpenAI GPT-4V preview and is not intended for production use."
 )
+st.write("\n")
 
 run()
 

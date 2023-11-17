@@ -2,12 +2,12 @@ import streamlit as st
 import base64
 import requests
 import json
+import components
 from utils import show_code
 
 
-def generate(image, api_key, product_attributes="{}"):
+def submit(image, api_key, product_attributes):
     headers = {"Content-Type": "application/json", "Authorization": f"Bearer {api_key}"}
-
     base64_image = base64.b64encode(image).decode("utf-8")
 
     payload = {
@@ -24,10 +24,9 @@ def generate(image, api_key, product_attributes="{}"):
                         "type": "text",
                         "text": f"""Write your best single-paragraph product description
                         for this image. You are encouraged to incorporate the product
-                        attributes below, if provided. Do not infer sizing, product name,
+                        attributes provided below. Do not infer sizing, product name,
                         product brand, or specific materials unless provided in the product
-                        attributes below. Do not use the brand's name to infer the brand's
-                        story.\n\n{product_attributes}""",
+                        attributes.\n\n{product_attributes}""",
                     },
                     {
                         "type": "image_url",
@@ -49,7 +48,9 @@ def generate(image, api_key, product_attributes="{}"):
             **json.loads(product_attributes),
             "description": response.json()["choices"][0]["message"]["content"],
         }
-        st.session_state.product_description = json.dumps(description, indent=4)
+        st.session_state.product_description = json.dumps(
+            description, indent=4, ensure_ascii=False
+        )
         st.balloons()
     except requests.exceptions.HTTPError:
         st.toast(f":red[HTTP error. Check your API key.]")
@@ -58,34 +59,32 @@ def generate(image, api_key, product_attributes="{}"):
 
 
 def run():
-    bytes_data = None
-
-    uploaded_file = st.file_uploader("Image file:")
-    if uploaded_file is not None:
-        bytes_data = uploaded_file.getvalue()
-        st.image(bytes_data, caption=uploaded_file.name, width=200)
+    image = components.image_uploader()
 
     product_attributes = st.text_area(
         "Product attributes:",
-        value='{\n  "brand_name": "",\n  "product_name": "",\n  "materials": ""\n}',
+        value=json.dumps(
+            {
+                "product_attributes": {
+                    "brand_name": "",
+                    "product_name": "",
+                    "materials": "",
+                }
+            },
+            indent=4,
+        ),
         height=200,
     )
 
     st.caption("Attributes are optional. Feel free to try your own!")
 
-    button = st.button(
-        "Generate",
-        disabled=bytes_data is None or "api_key" not in st.session_state,
-        key="generate",
-    )
+    api_key = components.api_key_with_warning()
 
-    if button and bytes_data is not None:
-        with st.spinner("Generating..."):
-            generate(bytes_data, st.session_state.api_key, product_attributes)
+    components.submit_button(image, api_key, submit, product_attributes)
 
     if "product_description" in st.session_state:
         st.text_area(
-            "Product description:",
+            "Product attributes with description:",
             st.session_state.product_description,
             height=400,
         )
@@ -101,4 +100,4 @@ st.write("\n")
 
 run()
 
-show_code([generate, run])
+show_code([submit, run, components])
