@@ -14,6 +14,8 @@ This app provides some basic demos to test the vision capabilities of GPT-4V.
   <tr><td>📋 Quality Control</td><td>Upload an image and generate a QC report.</td></tr>
 </table>
 
+And more coming soon!
+
 ## Prerequisites
 
 - Python 3.8+
@@ -30,16 +32,19 @@ pip install streamlit
 ```
 streamlit run 🏠_Home.py
 ```
+To remove the missing secrets warning, create a blank `secrets.toml` file in your `.streamlit` folder.
 
 ## OpenAI API key
 
-To remove the missing secrets warning, create a blank `secrets.toml` file in your `.streamlit` directory.
-
-If you don't want to input your OpenAI API key every run, you can add it to `secrets.toml` with following line:
+To avoid inputting your OpenAI API key every run, you can add it to `secrets.toml` with the following line. Paste your key between the double quotes.
 ```
 OPENAI_API_KEY = "YOUR KEY"
 ```
-Make sure you add `secrets.toml` to your `.gitignore` file to keep the key safe.
+For safety, the filepath should be in your `.gitignore` file.
+
+## Contributing
+
+Feel free to build and share new demos using the code!
 
 ## About GPT-4V
 

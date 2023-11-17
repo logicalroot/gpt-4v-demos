@@ -80,7 +80,7 @@ def run():
 
     if "response_text" in st.session_state:
         st.text_area(
-            "Response:",
+            "QC report:",
             st.session_state.response_text,
             height=400,
         )
