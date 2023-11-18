@@ -6,7 +6,7 @@ import components
 from utils import show_code
 
 
-def submit(image, api_key, product_attributes):
+def submit(image, api_key, product):
     headers = {"Content-Type": "application/json", "Authorization": f"Bearer {api_key}"}
     base64_image = base64.b64encode(image).decode("utf-8")
 
@@ -26,7 +26,9 @@ def submit(image, api_key, product_attributes):
                         for this image. You are encouraged to incorporate the product
                         attributes provided below. Do not infer sizing, product name,
                         product brand, or specific materials unless provided in the product
-                        attributes.\n\n{product_attributes}""",
+                        attributes. Make sure to write about the colors and other visible
+                        features of the product.
+                        \n\n{product}""",
                     },
                     {
                         "type": "image_url",
@@ -44,13 +46,16 @@ def submit(image, api_key, product_attributes):
         )
         response.raise_for_status()
 
-        description = {
-            **json.loads(product_attributes),
-            "product_description": response.json()["choices"][0]["message"]["content"],
-        }
-        st.session_state.product_description = json.dumps(
-            description, indent=4, ensure_ascii=False
+        description = response.json()["choices"][0]["message"]["content"]
+        product = json.loads(product)
+        description = (
+            description.replace(" '", " ")
+            .replace("' ", " ")
+            .replace(' "', " ")
+            .replace('" ', " ")
         )
+        product["product_attributes"]["description"] = description
+        st.session_state.product = json.dumps(product, indent=4, ensure_ascii=False)
         st.balloons()
     except requests.exceptions.HTTPError:
         st.toast(f":red[HTTP error. Check your API key.]")
@@ -61,7 +66,7 @@ def submit(image, api_key, product_attributes):
 def run():
     image = components.image_uploader()
 
-    product_attributes = st.text_area(
+    product = st.text_area(
         "Product attributes:",
         value=json.dumps(
             {
@@ -80,12 +85,12 @@ def run():
 
     api_key = components.api_key_with_warning()
 
-    components.submit_button(image, api_key, submit, product_attributes)
+    components.submit_button(image, api_key, submit, product)
 
-    if "product_description" in st.session_state:
+    if "product" in st.session_state:
         st.text_area(
             "Product attributes with description:",
-            st.session_state.product_description,
+            st.session_state.product,
             height=400,
         )
 

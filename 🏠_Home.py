@@ -3,7 +3,7 @@ import streamlit as st
 
 def run():
     st.set_page_config(
-        page_title="GPT-4V Testing Ground",
+        page_title="GPT-4V Demos",
         page_icon="🤖",
         initial_sidebar_state="expanded",
     )
@@ -22,15 +22,15 @@ def run():
     if st.session_state.api_key == "":
         st.sidebar.caption(":red[An OpenAI API key is required to run the tests.]")
 
-    st.write("# GPT-4V Testing Ground")
+    st.write("# GPT-4V Demos")
     st.write("\n")
     st.info(
-        "This app provides some basic demos to test the vision capabilities of GPT-4V."
+        "This mobile-friendly web app provides some basic demos to test the vision capabilities of GPT-4V."
     )
     st.info("Open them from the sidebar!", icon="↖️")
     st.caption(
         """This project is licensed under the terms of the MIT license.
-        [View the source code](https://github.com/logicalroot/gpt-4v-test)."""
+        [View the source code](https://github.com/logicalroot/gpt-4v-demos)."""
     )
     st.write("\n")
     st.markdown(
