@@ -37,7 +37,8 @@ def run():
         """
         ### About GPT-4V\n
         [OpenAI announcement](https://openai.com/blog/new-models-and-developer-products-announced-at-devday)\n
-        [GPT-4V system card](https://openai.com/research/gpt-4v-system-card)\n
+        [OpenAI research](https://openai.com/research/gpt-4v-system-card)\n
+        [OpenAI docs](https://platform.openai.com/docs/guides/vision)\n
         """
     )
 

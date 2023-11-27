@@ -1,4 +1,3 @@
-.streamlit/secrets.toml
-.streamlit/.secrets.toml
+secrets.toml
 old_pages
 **/__pycache__

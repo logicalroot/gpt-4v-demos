@@ -43,9 +43,11 @@ def submit(image, api_key):
 
         text = response.json()["choices"][0]["message"]["content"]
         st.session_state.ocr_text = text
-        st.balloons()
-    except requests.exceptions.HTTPError:
-        st.toast(f":red[HTTP error. Check your API key.]")
+
+        if "balloons" in st.session_state and st.session_state.balloons:
+            st.balloons()
+    except requests.exceptions.HTTPError as err:
+        st.toast(f":red[HTTP error: {err}]")
     except Exception as err:
         st.toast(f":red[Error: {err}]")
 
@@ -59,15 +61,16 @@ def run():
 
     if "ocr_text" in st.session_state:
         st.text_area(
-            "Extracted text:",
+            "Extracted Text",
             st.session_state.ocr_text,
             height=400,
         )
 
 
 st.set_page_config(page_title="GPT-4V OCR", page_icon="🧾")
+components.inc_sidebar_nav_height()
 st.write("# 🧾 OCR")
-st.write("Upload an image and extract the text.")
+st.write("Extract the text from an image.")
 st.info(
     "This is a test of the OpenAI GPT-4V preview and is not intended for production use."
 )
@@ -75,4 +78,5 @@ st.write("\n")
 
 run()
 
+components.toggle_balloons()
 show_code([submit, run, components])

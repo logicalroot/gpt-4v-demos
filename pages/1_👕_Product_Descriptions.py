@@ -22,13 +22,12 @@ def submit(image, api_key, product):
                 "content": [
                     {
                         "type": "text",
-                        "text": f"""Write your best single-paragraph product description
-                        for this image. You are encouraged to incorporate the product
-                        attributes provided below. Do not infer sizing, product name,
-                        product brand, or specific materials unless provided in the product
-                        attributes. Make sure to write about the colors and other visible
-                        features of the product.
-                        \n\n{product}""",
+                        "text": "Write your best single-paragraph product description for this image. "
+                        "You are encouraged to incorporate the product attributes provided below. "
+                        "Do not infer sizing, product name, product brand, or specific materials unless "
+                        "provided in the product attributes. Make sure to write about the colors and "
+                        "other visible features of the product.\n\n"
+                        f"{product}",
                     },
                     {
                         "type": "image_url",
@@ -56,9 +55,11 @@ def submit(image, api_key, product):
         )
         product["product_attributes"]["description"] = description
         st.session_state.product = json.dumps(product, indent=4, ensure_ascii=False)
-        st.balloons()
-    except requests.exceptions.HTTPError:
-        st.toast(f":red[HTTP error. Check your API key.]")
+
+        if "balloons" in st.session_state and st.session_state.balloons:
+            st.balloons()
+    except requests.exceptions.HTTPError as err:
+        st.toast(f":red[HTTP error: {err}]")
     except Exception as err:
         st.toast(f":red[Error: {err}]")
 
@@ -67,7 +68,7 @@ def run():
     image = components.image_uploader()
 
     product = st.text_area(
-        "Product attributes:",
+        "Product Attributes",
         value=json.dumps(
             {
                 "product_attributes": {
@@ -89,15 +90,16 @@ def run():
 
     if "product" in st.session_state:
         st.text_area(
-            "Product attributes with description:",
+            "Product Attributes With Description",
             st.session_state.product,
             height=400,
         )
 
 
 st.set_page_config(page_title="GPT-4V Product Descriptions", page_icon="👕")
+components.inc_sidebar_nav_height()
 st.write("# 👕 Product Descriptions")
-st.write("Upload an image and generate a product description.")
+st.write("Generate a product description for an image.")
 st.info(
     "This is a test of the OpenAI GPT-4V preview and is not intended for production use."
 )
@@ -105,4 +107,5 @@ st.write("\n")
 
 run()
 
+components.toggle_balloons()
 show_code([submit, run, components])
