@@ -53,6 +53,13 @@ This mobile-friendly web app provides some basic demos to test the vision capabi
       <code>{ "issues": [ { "issue_critical": true, "issue_category": "Contamination", "issue_description": "There is visible mold on one of the strawberries in the bottom left corner of the image, indicating spoilage and potential health risk if consumed." }, { "issue_critical": false, "issue_category": "Physical Damage", "issue_description": "Several strawberries appear to have minor physical damage, such as dents and bruises, which may affect their shelf life and aesthetic appeal but are not necessarily a health hazard." } ] }</code>
     </td>
   </tr>
+  <tr><td>🗣️ Speech</td><td>Generate audio from an image using GPT-4V + OpenAI TTS.</td></tr>
+  <tr>
+    <td colspan="2">
+      <img align="left" src="test_images/alice.jpg" alt="Alice" width="34%" />
+      <a href="https://github.com/logicalroot/gpt-4v-demos/raw/main/test_results/alice.mp3">Download audio</a> | <a href="https://codepen.io/logicalroot/full/gOqQzKE">Play audio on CodePen</a>
+    </td>
+  </tr>
 </table>
 
 ## Prerequisites
@@ -89,7 +96,7 @@ streamlit run 🏠_Home.py
 
 ## Limitations
 
-To use the camera on iOS devices, Streamlit must be configured to use SSL. See [Streamlit docs](https://docs.streamlit.io/library/advanced-features/https-support).
+To use the camera input on iOS devices, Streamlit must be configured to use SSL. See [Streamlit docs](https://docs.streamlit.io/library/advanced-features/https-support).
 
 ## Contributing
 
